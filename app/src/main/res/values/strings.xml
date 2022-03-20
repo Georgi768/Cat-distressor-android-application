@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">AndroidApplication</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="login">Login</string>
+    <string name="signup">signup</string>
+    <string name="email">email</string>
+    <string name="api_url">https://api.thecatapi.com/v1/images/search</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="welcome">Welcome</string>
+    <string name="want_to_create_an_account_click_here">Want to create an account? Click here!</string>
+    <string name="already_have_an_account_click_here">Already have an account? Click here!</string>
+    <string name="new_cat">New Cat</string>
+    <string name="american_curl">American Curl</string>
+    <string name="cat_name">Cat name</string>
+    <string name="cat_origin">Cat origin</string>
+    <string name="description">Description</string>
+    <string name="description_text">Description text</string>
+    <string name="temperament">Temperament</string>
+    <string name="temperament_text">Temperament text</string>
 </resources>

@@ -1,4 +1,7 @@
 package com.example.androidapplication.activities
 
-class CollectionActivity {
+import androidx.appcompat.app.AppCompatActivity
+
+class CollectionActivity : AppCompatActivity() {
+
 }
