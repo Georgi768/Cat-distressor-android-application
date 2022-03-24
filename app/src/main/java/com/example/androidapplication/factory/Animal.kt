@@ -1,4 +1,4 @@
 package com.example.androidapplication.factory
 
-interface Animal {
+open class Animal (val id: Int, val breed: String, val description: String, val imageURL: String){
 }
