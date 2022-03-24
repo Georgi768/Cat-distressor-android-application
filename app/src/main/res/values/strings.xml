@@ -18,4 +18,5 @@
     <string name="description_text">Description text</string>
     <string name="temperament">Temperament</string>
     <string name="temperament_text">Temperament text</string>
+    <string name="cat_collection">Cat Collection</string>
 </resources>
