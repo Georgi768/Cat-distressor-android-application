@@ -1,5 +1,6 @@
 package com.example.androidapplication.databaseManagement
 
+import android.content.ClipDescription
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
@@ -60,6 +61,18 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
                 val result = this.writableDatabase.insert(tableNameUser, null,contentValue)
                 if(result.toString() == "-1")
                     return false
+        return true
+    }
+
+    fun insertCatIntoDatabase(name: String?, descrip: String?, url: String) : Boolean
+    {
+        //encryption
+        contentValue.put(breed,name)
+        contentValue.put(description,descrip)
+        contentValue.put(image, url)
+        val result = this.writableDatabase.insert(tableNameAnimal, null,contentValue)
+        if(result.toString() == "-1")
+            return false
         return true
     }
 

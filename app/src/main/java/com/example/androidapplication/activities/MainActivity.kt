@@ -14,16 +14,21 @@ import com.bumptech.glide.Glide
 import com.example.androidapplication.R
 import com.example.androidapplication.commands.GetNext
 import com.example.androidapplication.commands.ICommand
+import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.user.User
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
 
 class MainActivity : AppCompatActivity(), Window{
+    private var dbHelper: DBHelper = DBHelper(this)
     private lateinit var getNewCatButton: FloatingActionButton
     private lateinit var getCatInfoButton: FloatingActionButton
     private lateinit var catImageView: ImageView
     private lateinit var nextCommand : ICommand
     private var requestQueue: RequestQueue? = null
+    private var currentCatName :String? = null
+    private lateinit var currentCatUrl: String
+    private var currentCatDescription: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +38,16 @@ class MainActivity : AppCompatActivity(), Window{
         getCatInfoButton = findViewById(R.id.getCatInfoButton)
         catImageView = findViewById(R.id.catImage)
 
+        currentCatDescription = null
+        currentCatName = null
+        currentCatUrl = ""
+        getCatInfoButton.setOnClickListener {
+            saveCat(currentCatUrl)
+        }
 
         nextCommand.execute()
     }
+
 
     override fun next() {
         println("My ass")
@@ -49,38 +61,22 @@ class MainActivity : AppCompatActivity(), Window{
         val request = JsonArrayRequest(Request.Method.GET, url, null, { response ->
             try {
                 val catData = response.getJSONObject(0)
-                val catUrl: String = catData.getString("url")
+                currentCatUrl = catData.getString("url")
                 Glide.with(this)
-                    .load(catUrl)
+                    .load(currentCatUrl)
                     .override(200, 600) // resizes the image to 100x200 pixels but does not respect aspect ratio
-                    .into(catImageView);
-                Log.println(Log.VERBOSE, "AAAA", catData.toString())
-                //On button click send and display data
-                getCatInfoButton.setOnClickListener {
-                    val breedInfo = catData.getJSONArray("breeds")
-                    if (breedInfo.isNull(0)) {
-                        Toast.makeText(this, "No data available", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val breedData = breedInfo.getJSONObject(0)
-                        //Sends data to selected Intent
-                        val intent = Intent(this, CollectionActivity::class.java)
-                        intent.putExtra("name", breedData.getString("name"))
-                        intent.putExtra("origin", breedData.getString("origin"))
-                        intent.putExtra("description", breedData.getString("description"))
-                        intent.putExtra("temperament", breedData.getString("temperament"))
-                        intent.putExtra("catUrl", catUrl)
-                        intent.putExtra("origin", breedData.getString("origin"))
-                        intent.putExtra("description", breedData.getString("description"))
-                        intent.putExtra("temperament", breedData.getString("temperament"))
-                        intent.putExtra("catUrl", catUrl)
-                        startActivity(intent)
-                    }
-                }
+                    .into(catImageView)
+
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
         }, { error -> error.printStackTrace() })
         requestQueue?.add(request)
 
+    }
+    private fun saveCat(catUrl: String){
+        val catUrl = currentCatUrl
+        dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, catUrl)
+        println("Cat saved$currentCatName he $currentCatDescription$currentCatUrl")
     }
 }
