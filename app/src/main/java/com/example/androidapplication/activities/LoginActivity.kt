@@ -5,9 +5,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidapplication.R
+import com.example.androidapplication.databaseManagement.DBHelper
 import com.google.android.material.textfield.TextInputEditText
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var database : DBHelper
     private lateinit var username: TextInputEditText
     private lateinit var password: TextInputEditText
     private lateinit var signUpText: TextView
@@ -16,7 +18,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
+        database = DBHelper(this)
 
         username = findViewById(R.id.username)
         password = findViewById(R.id.password)

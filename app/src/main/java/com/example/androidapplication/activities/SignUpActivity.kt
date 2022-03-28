@@ -23,9 +23,6 @@ class SignUpActivity : AppCompatActivity() {
         val loginText = findViewById<TextView>(R.id.logintext)
         database =  DBHelper(this)
 
-
-
-
         btnSignUp.setOnClickListener{
             insertData(username.text.toString(),password.text.toString(),database)
         }

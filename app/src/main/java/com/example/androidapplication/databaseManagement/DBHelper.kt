@@ -2,8 +2,14 @@ package com.example.androidapplication.databaseManagement
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.androidapplication.activities.LoginActivity
+import com.example.androidapplication.activities.MainActivity
+import com.example.androidapplication.factory.Animal
+import com.example.androidapplication.user.NormalUser
+import com.example.androidapplication.user.User
 
 class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db",null, 1){
     private val contentValue = ContentValues()

@@ -12,6 +12,7 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.example.androidapplication.R
+import com.example.androidapplication.user.User
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
 

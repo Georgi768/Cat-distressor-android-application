@@ -19,4 +19,7 @@
     <string name="temperament">Temperament</string>
     <string name="temperament_text">Temperament text</string>
     <string name="cat_collection">Cat Collection</string>
+    <string name="inorder">InOrder</string>
+    <string name="random">Random</string>
+    <string name="backwards">Backwards</string>
 </resources>
