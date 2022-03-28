@@ -1,4 +1,12 @@
 package com.example.androidapplication.commands
 
-class Save {
+import com.example.androidapplication.databaseManagement.DBHelper
+
+class Save(val db: DBHelper) : ICommand {
+
+    fun save()
+    {
+
+    }
+
 }

@@ -1,8 +1,7 @@
 package com.example.androidapplication.commands
 
-class Remove : ICommand{
-
-    fun remove()
+class CommandHelper {
+    fun SetCommand(command : ICommand)
     {
 
     }

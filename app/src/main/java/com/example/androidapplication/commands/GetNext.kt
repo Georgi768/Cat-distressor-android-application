@@ -1,4 +1,10 @@
 package com.example.androidapplication.commands
 
-class GetNext {
+class GetNext : ICommand{
+
+    fun getNext()
+    {
+
+    }
+
 }
