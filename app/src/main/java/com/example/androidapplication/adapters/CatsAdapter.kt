@@ -1,43 +1,35 @@
 package com.example.androidapplication.adapters
-
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.androidapplication.R
 import com.example.androidapplication.factory.Animal
 
-class CatsAdapter (val context: Context, val mCats: ArrayList<Animal>) : RecyclerView.Adapter<CatsAdapter.ViewHolder>(){
-
+class CatsAdapter (private val context: Context, val mCats: ArrayList<Animal>) : RecyclerView.Adapter<CatsAdapter.ViewHolder>(){
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.cat_item,
-                viewGroup,
-                false
-            )
+        return ViewHolder(LayoutInflater.from(context).inflate(
+            R.layout.activity_collection_user,
+            viewGroup,
+            false)
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder,position: Int) {
         val items = mCats.get(position)
-        holder.catItem.setImageURI(items.imageURL.toUri())
+        holder.catItem.text = items.description // holder.catItem.setImageURI(items.imageURL.toUri())
+        Glide.with(context).load(items.imageURL).into(holder.catImage)
     }
 
     override fun getItemCount(): Int {
         return mCats.size
     }
-    fun addCat(model: Animal) {
-        mCats.add(model)
-        // notifyDataSetChanged() // this method is costly I avoid it whenever possible
-        notifyItemInserted(mCats.size)
-    }
-
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val catItem = itemView.findViewById<ImageView>(R.id.cat_image_holder)
+        val catImage = itemView.findViewById<ImageView>(R.id.c_image)
+        val catItem = itemView.findViewById<TextView>(R.id.tv_item_name)
     }
 }

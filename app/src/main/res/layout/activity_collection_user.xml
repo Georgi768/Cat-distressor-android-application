@@ -22,6 +22,7 @@
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawable">
             <ImageView
+                android:id="@+id/c_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:contentDescription="@string/app_name"
