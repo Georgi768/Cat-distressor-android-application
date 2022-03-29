@@ -26,6 +26,11 @@ class SignUpActivity : AppCompatActivity() {
         btnSignUp.setOnClickListener{
             insertData(username.text.toString(),password.text.toString(),database)
         }
+
+        loginText.setOnClickListener{
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
     private fun insertData(name:String,pass:String,database:DBHelper)
     {
