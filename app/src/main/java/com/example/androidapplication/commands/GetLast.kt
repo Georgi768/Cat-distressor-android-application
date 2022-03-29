@@ -1,9 +1,8 @@
 package com.example.androidapplication.commands
 
-import com.example.androidapplication.activities.MainActivity
 import com.example.androidapplication.activities.Window
 
-class Save(window : Window) : ICommand {
+class GetLast(window : Window) : ICommand {
     private val window = window
     override fun execute() {
         window.performAction()

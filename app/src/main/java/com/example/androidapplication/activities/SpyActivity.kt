@@ -14,7 +14,7 @@ class SpyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getNewCatButton = findViewById(R.id.getNewCatButton)
+        //getNewCatButton = findViewById(R.id.getNewCatButton)
         getCatInfoButton = findViewById(R.id.getCatInfoButton)
         catImageView = findViewById(R.id.catImage)
     }
