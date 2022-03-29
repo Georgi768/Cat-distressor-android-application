@@ -1,8 +1,10 @@
 package com.example.androidapplication.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidapplication.R
 import com.example.androidapplication.databaseManagement.DBHelper
@@ -24,6 +26,27 @@ class LoginActivity : AppCompatActivity() {
         password = findViewById(R.id.password)
         btnSignIn = findViewById(R.id.buttonSignIn)
         signUpText = findViewById(R.id.signUpText)
+
+
+
+        btnSignIn.setOnClickListener {
+            val usernameToPass= username.text
+            val passwordToPass = password.text
+
+            if (!usernameToPass.isNullOrEmpty() && !passwordToPass.isNullOrEmpty()){
+                val login = database.loginUser(usernameToPass.toString(), passwordToPass.toString())
+                if (login) {
+                    Toast.makeText(this, "Sign in successful", Toast.LENGTH_SHORT).show()
+                    val intent = Intent( this, MainActivity::class.java)
+                    intent.putExtra("ID", usernameToPass)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "Sign in unsuccessful, edit password or username", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "All required", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
 

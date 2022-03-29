@@ -4,6 +4,7 @@ import android.content.ClipDescription
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.androidapplication.activities.LoginActivity
@@ -73,4 +74,17 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         this.writableDatabase.insert(tableNameAnimal, null,contentValue)
     }
 
+    fun checkUserName(username: String): Boolean {
+        val query = "SELECT * FROM $tableNameUser WHERE Name = ?"
+        val array  = arrayOf(username)
+        val result = this.readableDatabase.rawQuery(query, array)
+        return result.count == 1
+    }
+
+    fun loginUser(username: String, password: String): Boolean {
+        val query = "SELECT * FROM $tableNameUser WHERE Name = ? AND Password = ?"
+        val array = arrayOf(password, username)
+        val result = this.readableDatabase.rawQuery(query, array)
+        return result.count == 1
+    }
 }
