@@ -1,40 +1,40 @@
 package com.example.androidapplication.activities
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidapplication.R
-import com.example.androidapplication.adapters.CatsAdapter
+import com.example.androidapplication.adapters.SpyAdapter
 import com.example.androidapplication.commands.ICommand
 import com.example.androidapplication.commands.Save
+import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.factory.Animal
 import com.example.androidapplication.factory.Cat
+import com.google.android.material.textfield.TextInputEditText
 
 class SpyContentActivity : AppCompatActivity(), Window {
+    private var dbHelper: DBHelper = DBHelper(this)
     private lateinit var userCollection : RecyclerView
-    private lateinit var stealBtn : Button
-    private lateinit var userInput : TextView
+    private lateinit var userInput : TextInputEditText
     private lateinit var saveCommand : ICommand
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spyusercollection)
-        stealBtn = findViewById(R.id.Steal)
         userCollection = findViewById(R.id.userCollection)
         userInput = findViewById(R.id.userSearch)
         saveCommand = Save(this)
 
         userCollection.layoutManager = LinearLayoutManager(this)
 
-        userCollection.adapter = CatsAdapter(this,generateList())
-
-        stealBtn.setOnClickListener {
-
+        userCollection.adapter = SpyAdapter(this,generateList())
+        userInput.doAfterTextChanged{
+            performAction()
         }
     }
+
 
     private fun generateList() : ArrayList<Animal>
     {
@@ -51,7 +51,7 @@ class SpyContentActivity : AppCompatActivity(), Window {
     }
 
     override fun performAction() {
-        TODO("Not yet implemented")
+
     }
 
     private fun getImage()
