@@ -1,10 +1,10 @@
 package com.example.androidapplication.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
@@ -15,16 +15,15 @@ import com.example.androidapplication.commands.GetNext
 import com.example.androidapplication.commands.ICommand
 import com.example.androidapplication.commands.Save
 import com.example.androidapplication.databaseManagement.DBHelper
-import com.example.androidapplication.factory.Animal
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
 
-class MainActivity : AppCompatActivity(), Window{
+class MainActivity : AppCompatActivity(), Window {
     private var dbHelper: DBHelper = DBHelper(this)
     private lateinit var saveAnimal: FloatingActionButton
     private lateinit var getCatInfoButton: FloatingActionButton
     private lateinit var catImageView: ImageView
-    private lateinit var nextCommand : ICommand
+    private lateinit var nextCommand: ICommand
     private var requestQueue: RequestQueue? = null
     private var currentCatName :String? = null
     private lateinit var currentCatUrl: String
@@ -49,12 +48,12 @@ class MainActivity : AppCompatActivity(), Window{
         currentCatName = null
 
         getCatInfoButton.setOnClickListener {
-            startActivity(Intent(this,CollectionActivity::class.java))
+            startActivity(Intent(this, CollectionActivity::class.java))
         }
-        saveAnimal.setOnClickListener{
+        saveAnimal.setOnClickListener {
             saveCatCommand.execute()
         }
-        newCatBtn.setOnClickListener{
+        newCatBtn.setOnClickListener {
             nextCommand.execute()
         }
     }
@@ -71,7 +70,10 @@ class MainActivity : AppCompatActivity(), Window{
                 currentCatUrl = catData.getString("url")
                 Glide.with(this)
                     .load(currentCatUrl)
-                    .override(200, 600) // resizes the image to 100x200 pixels but does not respect aspect ratio
+                    .override(
+                        200,
+                        600
+                    ) // resizes the image to 100x200 pixels but does not respect aspect ratio
                     .into(catImageView)
 
             } catch (e: JSONException) {
@@ -80,6 +82,7 @@ class MainActivity : AppCompatActivity(), Window{
         }, { error -> error.printStackTrace() })
         requestQueue?.add(request)
     }
+
     override fun performAction() {
         //Save in the database for cats, and saved to userCollection
         val emptyString = ""
