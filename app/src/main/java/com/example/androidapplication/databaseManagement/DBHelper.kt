@@ -1,5 +1,6 @@
 package com.example.androidapplication.databaseManagement
 
+import android.annotation.SuppressLint
 import android.content.ClipDescription
 import android.content.ContentValues
 import android.content.Context
@@ -38,8 +39,6 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
             " FOREIGN KEY($userID) REFERENCES $tableNameUser(ID)," +
             " FOREIGN KEY($animalID) REFERENCES $tableNameAnimal(ID))"
 
-
-
     private val SQL_DELETE_ENTRIES = "DROP TABLE IF EXISTS $tableNameUser"
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -67,7 +66,6 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
 
     fun insertCatIntoDatabase(name: String?, descrip: String?, url: String)
     {
-
         contentValue.put(breed,name)
         contentValue.put(description,descrip)
         contentValue.put(image, url)
@@ -78,13 +76,31 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         val query = "SELECT * FROM $tableNameUser WHERE Name = ?"
         val array  = arrayOf(username)
         val result = this.readableDatabase.rawQuery(query, array)
+        result.close()
         return result.count == 1
+    }
+
+    @SuppressLint("Range")
+    fun addCatInUserCollection(userID : Int, animalImage: String)
+    {
+        val selectQuery = "SELECT ID FROM $tableNameAnimal WHERE $image = ?"
+        val array = arrayOf(animalImage)
+        val idSearchResult = this.readableDatabase.rawQuery(selectQuery,array)
+        val id =  idSearchResult.getInt(idSearchResult.getColumnIndex("ID"))
+        idSearchResult.close()
+
+        contentValue.put(userID.toString(),id)
+        contentValue.put(animalID, id)
+
+        this.readableDatabase.insert(tableAnimalCollection,null,contentValue)
+        println("Animal added to user collection")
     }
 
     fun loginUser(username: String, password: String): Boolean {
         val query = "SELECT * FROM $tableNameUser WHERE Name = ? AND Password = ?"
         val array = arrayOf(password, username)
         val result = this.readableDatabase.rawQuery(query, array)
+        result.close()
         return result.count == 1
     }
 }

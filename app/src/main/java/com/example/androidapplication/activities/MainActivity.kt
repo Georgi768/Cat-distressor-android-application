@@ -27,14 +27,17 @@ class MainActivity : AppCompatActivity(), Window{
     private lateinit var nextCommand : ICommand
     private var requestQueue: RequestQueue? = null
     private var currentCatName :String? = null
-    private var currentCatUrl: String? = null
+    private lateinit var currentCatUrl: String
     private var currentCatDescription: String? = null
     private lateinit var newCatBtn : Button
     private lateinit var saveCatCommand : ICommand
+    private val data = intent
+    private var id : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        id = data.getIntExtra("ID",id)
         nextCommand = GetNext(this)
         saveCatCommand = Save(this)
         saveAnimal = findViewById(R.id.SaveToCollection)
@@ -81,6 +84,8 @@ class MainActivity : AppCompatActivity(), Window{
         //Save in the database for cats, and saved to userCollection
         val emptyString = ""
         dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, emptyString)
+        dbHelper.addCatInUserCollection(id,currentCatUrl)
+
         println("Cat saved$currentCatName he $currentCatDescription$emptyString")
     }
 }
