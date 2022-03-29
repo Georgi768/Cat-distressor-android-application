@@ -22,4 +22,7 @@
     <string name="inorder">InOrder</string>
     <string name="random">Random</string>
     <string name="backwards">Backwards</string>
+    <string name="next">Next</string>
+    <string name="mainwindow">MainWindow</string>
+    <string name="spy_window">Spy window</string>
 </resources>

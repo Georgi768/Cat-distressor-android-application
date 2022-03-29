@@ -64,16 +64,13 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         return true
     }
 
-    fun insertCatIntoDatabase(name: String?, descrip: String?, url: String) : Boolean
+    fun insertCatIntoDatabase(name: String?, descrip: String?, url: String)
     {
-        //encryption
+
         contentValue.put(breed,name)
         contentValue.put(description,descrip)
         contentValue.put(image, url)
-        val result = this.writableDatabase.insert(tableNameAnimal, null,contentValue)
-        if(result.toString() == "-1")
-            return false
-        return true
+        this.writableDatabase.insert(tableNameAnimal, null,contentValue)
     }
 
 }

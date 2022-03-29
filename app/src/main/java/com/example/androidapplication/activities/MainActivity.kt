@@ -3,9 +3,8 @@ package com.example.androidapplication.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
@@ -14,48 +13,53 @@ import com.bumptech.glide.Glide
 import com.example.androidapplication.R
 import com.example.androidapplication.commands.GetNext
 import com.example.androidapplication.commands.ICommand
+import com.example.androidapplication.commands.Save
 import com.example.androidapplication.databaseManagement.DBHelper
-import com.example.androidapplication.user.User
+import com.example.androidapplication.factory.Animal
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
 
 class MainActivity : AppCompatActivity(), Window{
     private var dbHelper: DBHelper = DBHelper(this)
-    private lateinit var getNewCatButton: FloatingActionButton
+    private lateinit var saveAnimal: FloatingActionButton
     private lateinit var getCatInfoButton: FloatingActionButton
     private lateinit var catImageView: ImageView
     private lateinit var nextCommand : ICommand
     private var requestQueue: RequestQueue? = null
     private var currentCatName :String? = null
-    private lateinit var currentCatUrl: String
+    private var currentCatUrl: String? = null
     private var currentCatDescription: String? = null
+    private lateinit var newCatBtn : Button
+    private lateinit var saveCatCommand : ICommand
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         nextCommand = GetNext(this)
-        getNewCatButton = findViewById(R.id.getNewCatButton)
+        saveCatCommand = Save(this)
+        saveAnimal = findViewById(R.id.SaveToCollection)
         getCatInfoButton = findViewById(R.id.getCatInfoButton)
         catImageView = findViewById(R.id.catImage)
+        newCatBtn = findViewById(R.id.getNewCatBtn)
 
         currentCatDescription = null
         currentCatName = null
-        currentCatUrl = ""
+
         getCatInfoButton.setOnClickListener {
-            saveCat(currentCatUrl)
+            startActivity(Intent(this,CollectionActivity::class.java))
         }
-
-        nextCommand.execute()
+        saveAnimal.setOnClickListener{
+            saveCatCommand.execute()
+        }
+        newCatBtn.setOnClickListener{
+            nextCommand.execute()
+        }
     }
-
 
     override fun next() {
-        println("My ass")
         getCatImage(resources.getString(R.string.api_url))
-        getNewCatButton.setOnClickListener {
-            getCatImage(resources.getString(R.string.api_url))
-        }
     }
+
     private fun getCatImage(url: String) {
         requestQueue = Volley.newRequestQueue(this)
         val request = JsonArrayRequest(Request.Method.GET, url, null, { response ->
@@ -72,11 +76,11 @@ class MainActivity : AppCompatActivity(), Window{
             }
         }, { error -> error.printStackTrace() })
         requestQueue?.add(request)
-
     }
-    private fun saveCat(catUrl: String){
-        val catUrl = currentCatUrl
-        dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, catUrl)
-        println("Cat saved$currentCatName he $currentCatDescription$currentCatUrl")
+    override fun performAction() {
+        //Save in the database for cats, and saved to userCollection
+        val emptyString = ""
+        dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, emptyString)
+        println("Cat saved$currentCatName he $currentCatDescription$emptyString")
     }
 }

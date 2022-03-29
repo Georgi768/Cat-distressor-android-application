@@ -1,5 +1,6 @@
 package com.example.androidapplication.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -9,44 +10,53 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidapplication.R
 import com.example.androidapplication.adapters.CatsAdapter
+import com.example.androidapplication.commands.GetLast
+import com.example.androidapplication.commands.GetNext
+import com.example.androidapplication.commands.ICommand
 import com.example.androidapplication.factory.Animal
 import com.example.androidapplication.factory.Cat
 import com.example.androidapplication.iterator.Aggregate
 import com.example.androidapplication.iterator.Collection
 import com.example.androidapplication.iterator.TraverseInOrder
 
-class CollectionActivity : AppCompatActivity() {
-    private lateinit var cats: ArrayList<Animal>
+class CollectionActivity : AppCompatActivity(),Window {
     private lateinit var cat_view : RecyclerView
     private lateinit var aggregate : Collection
     private lateinit var inOrderButton : Button
-    private lateinit var  backBtn : Button
+    private lateinit var backBtn : Button
+    private lateinit var toMainWindow : Button
+    private lateinit var nextCommand : ICommand
+    private lateinit var lastCommand : ICommand
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_collection)
+        nextCommand = GetNext(this)
+        lastCommand = GetLast(this)
+
+        toMainWindow = findViewById(R.id.ToMainWindow)
         inOrderButton = findViewById(R.id.InOrderTraversal)
         backBtn = findViewById(R.id.BackwardsTraversal)
-        cats = ArrayList()
         cat_view = findViewById(R.id.cat_view)
         aggregate = Aggregate(generateList())
 
         cat_view.layoutManager = LinearLayoutManager(this)
 
-        val adapter = CatsAdapter(this,traverseInOrderCollection())
-        cat_view.adapter = adapter
+        cat_view.adapter = CatsAdapter(this,traverseInOrderCollection())
 
 
         inOrderButton.setOnClickListener{
-            val adapter = CatsAdapter(this,traverseInOrderCollection())
-            cat_view.adapter = adapter
+            nextCommand.execute()
         }
 
         backBtn.setOnClickListener{
-            val adapter = CatsAdapter(this,traverseCollectionInBackwards())
-
-            cat_view.adapter = adapter
+            lastCommand.execute()
         }
+
+        toMainWindow.setOnClickListener{
+            startActivity(Intent(this,MainActivity::class.java))
+        }
+
     }
 
     private fun generateList() : ArrayList<Animal>
@@ -77,5 +87,13 @@ class CollectionActivity : AppCompatActivity() {
             randomCollection.add(iterator.next())
         }
         return randomCollection
+    }
+
+    override fun next() {
+        cat_view.adapter = CatsAdapter(this,traverseInOrderCollection())
+    }
+
+    override fun performAction() {
+        cat_view.adapter = CatsAdapter(this,traverseCollectionInBackwards())
     }
 }
