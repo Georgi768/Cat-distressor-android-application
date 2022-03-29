@@ -11,8 +11,8 @@ import android.database.sqlite.SQLiteOpenHelper
 import com.example.androidapplication.activities.LoginActivity
 import com.example.androidapplication.activities.MainActivity
 import com.example.androidapplication.factory.Animal
-import com.example.androidapplication.user.NormalUser
-import com.example.androidapplication.user.User
+import com.example.androidapplication.factory.Cat
+import com.example.androidapplication.factory.CatFactory
 
 class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db",null, 1){
     private val contentValue = ContentValues()
@@ -70,6 +70,47 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         contentValue.put(description,descrip)
         contentValue.put(image, url)
         this.writableDatabase.insert(tableNameAnimal, null,contentValue)
+    }
+
+    @SuppressLint("Range")
+    fun getListOfCatsByUser(userId: Int) : ArrayList<Animal>
+    {
+        val querry: String =
+            "SELECT\n" +
+                "  a.ID,\n" +
+                "  a.Breed,\n" +
+                "  a.Description,\n" +
+                "  a.ImageUrl\n" +
+                "FROM\n" +
+                "  Animal as a,\n" +
+                "  User as u,\n" +
+                "  AnimalCollection as c\n" +
+                "WHERE\n" +
+                "  a.ID = c.AnimalID\n" +
+                "  AND\n" +
+                "  u.ID = c.UserID\n" +
+                "  AND\n" +
+                "  u.ID = ?"
+
+        val string = arrayOf(userId.toString())
+        val result = this.readableDatabase.rawQuery(querry, string)
+        result.close()
+
+        val cats : ArrayList<Animal> = ArrayList()
+
+        while (result.moveToNext()) {
+
+            val id = result.getInt(result.getColumnIndex("ID"))
+            val breed = result.getString(result.getColumnIndex("Breed"))
+            val description = result.getString(result.getColumnIndex("Description"))
+            val imageURL = result.getString(result.getColumnIndex("imageURL"))
+
+            val cat = CatFactory.CreateAnimal(id, breed, description, imageURL)
+
+            cats.add(cat)
+        }
+
+        return cats
     }
 
     fun checkUserName(username: String): Boolean {
