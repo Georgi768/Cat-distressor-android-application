@@ -12,10 +12,11 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.androidapplication.R
+import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.factory.Animal
 
 class SpyAdapter (private val context: Context, val mCats: ArrayList<Animal>) : RecyclerView.Adapter<SpyAdapter.ViewHolder>(){
-
+    private var dbHelper: DBHelper = DBHelper(context)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             LayoutInflater.from(context).inflate(
@@ -33,7 +34,6 @@ class SpyAdapter (private val context: Context, val mCats: ArrayList<Animal>) : 
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Steal cat? ${items.id}")
             builder.setPositiveButton("Yes"){ _, _ ->
-
                 Toast.makeText(context,"clicked yes",Toast.LENGTH_LONG).show()
             }
             builder.setNeutralButton("Cancel"){ _, _ ->
