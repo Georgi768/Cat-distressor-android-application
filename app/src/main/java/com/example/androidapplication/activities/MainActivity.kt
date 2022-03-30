@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -26,21 +28,25 @@ class MainActivity : AppCompatActivity(), Window {
     private lateinit var getCatInfoButton: FloatingActionButton
     private lateinit var catImageView: ImageView
     private lateinit var nextCommand: ICommand
+    private lateinit var spyCollectionBtn : Button
     private var requestQueue: RequestQueue? = null
     private var currentCatName :String? = null
     private lateinit var currentCatUrl: String
     private var currentCatDescription: String? = null
     private lateinit var newCatBtn : Button
+    private lateinit var themeSwitch : SwitchCompat
     private lateinit var saveCatCommand : ICommand
-
-    private var id : Int = 0
+    private var userID : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         getCatImage(resources.getString(R.string.api_url))
         val data = intent
-        id = data.getIntExtra("user_ID",0)
+        spyCollectionBtn = findViewById(R.id.SpyCollection)
+        themeSwitch = findViewById(R.id.ThemeSwitch)
+        userID = data.getIntExtra("user_ID",0)
+        isUserSpy(data.getIntExtra("isSpy",0))
         nextCommand = GetNext(this)
         saveCatCommand = Save(this)
         saveAnimal = findViewById(R.id.SaveToCollection)
@@ -52,6 +58,7 @@ class MainActivity : AppCompatActivity(), Window {
         currentCatDescription = null
         currentCatName = null
 
+
         getCatInfoButton.setOnClickListener {
             startActivity(Intent(this, CollectionActivity::class.java))
         }
@@ -62,11 +69,29 @@ class MainActivity : AppCompatActivity(), Window {
             nextCommand.execute()
         }
 
+        spyCollectionBtn.setOnClickListener {
+            startActivity(Intent(this, SpyContentActivity::class.java))
+        }
+
         //ewCatBtn.isVisible = false
     }
 
+
     override fun next() {
         getCatImage(resources.getString(R.string.api_url))
+    }
+
+    private fun isUserSpy(spyNumber : Int) : Boolean
+    {
+        if(spyNumber == 1){
+            spyCollectionBtn.isVisible = true
+            themeSwitch.isVisible = true
+            println("this is a sply user")
+            return true
+        }
+        spyCollectionBtn.isVisible = false
+        themeSwitch.isVisible = false
+        return false
     }
 
     private fun getCatImage(url: String) {
@@ -95,7 +120,7 @@ class MainActivity : AppCompatActivity(), Window {
         val catURl = currentCatUrl
         dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, catURl)
         println("CatInserted")
-        dbHelper.addCatInUserCollection(id,currentCatUrl)
+        dbHelper.addCatInUserCollection(userID,currentCatUrl)
 
         println("Cat saved$currentCatName he $currentCatDescription$catURl")
     }

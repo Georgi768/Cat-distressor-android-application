@@ -35,15 +35,18 @@ class LoginActivity : AppCompatActivity() {
             if (!usernameToPass.isNullOrEmpty() && !passwordToPass.isNullOrEmpty()){
                 val login = database.loginUser(usernameToPass.toString(), passwordToPass.toString())
                 if (login) {
-                    val query = "SELECT ID as user_ID FROM User WHERE Name = ?"
-                    val userID = database.readableDatabase.rawQuery(query, arrayOf(usernameToPass.toString()))
-                    userID.moveToFirst()
-                    val iD = userID.getInt(userID.getColumnIndex("user_ID"))
-                    userID.close()
+                    val query = "SELECT ID as user_ID, SpyUser as isSpy FROM User WHERE Name = ?"
+                    val queryCursor = database.readableDatabase.rawQuery(query, arrayOf(usernameToPass.toString()))
+                    queryCursor.moveToFirst()
+                    val iD = queryCursor.getInt(queryCursor.getColumnIndex("user_ID"))
+                    queryCursor.moveToLast()
+                    val isSpy = queryCursor.getInt(queryCursor.getColumnIndex("isSpy"))
+                    queryCursor.close()
 
                     Toast.makeText(this, "Sign in successful", Toast.LENGTH_SHORT).show()
                     val intent = Intent( this, MainActivity::class.java)
                     intent.putExtra("user_ID", iD)
+                    intent.putExtra("isSpy", isSpy)
                     startActivity(intent)
                 } else {
                     Toast.makeText(this, "Sign in unsuccessful, edit password or username", Toast.LENGTH_SHORT).show()

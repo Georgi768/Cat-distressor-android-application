@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".activities.CollectionActivity"/>
         <activity android:name=".activities.SignUpActivity"/>
-
+        <activity android:name=".activities.SpyContentActivity"/>
         <activity android:name=".activities.MainActivity"/>
     </application>
 

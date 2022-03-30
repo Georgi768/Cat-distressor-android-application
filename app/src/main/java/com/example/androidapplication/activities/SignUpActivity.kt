@@ -38,7 +38,7 @@ class SignUpActivity : AppCompatActivity() {
         {
             if(!userExist(name))
             {
-                if(database.insertIntoDatabase(name,pass))
+                if(database.insertIntoDatabase(name,pass,0))
                     Toast.makeText(this,"Entry added",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this,LoginActivity::class.java)
                     startActivity(intent)

@@ -26,4 +26,5 @@
     <string name="mainwindow">MainWindow</string>
     <string name="spy_window">Spy window</string>
     <string name="user">User</string>
+    <string name="theme">Theme</string>
 </resources>
