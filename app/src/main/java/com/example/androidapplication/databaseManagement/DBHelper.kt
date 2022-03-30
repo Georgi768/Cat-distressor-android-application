@@ -1,19 +1,13 @@
 package com.example.androidapplication.databaseManagement
 
 import android.annotation.SuppressLint
-import android.content.ClipDescription
 import android.content.ContentValues
 import android.content.Context
-import android.content.Intent
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.androidapplication.activities.LoginActivity
-import com.example.androidapplication.activities.MainActivity
 import com.example.androidapplication.factory.Animal
-import com.example.androidapplication.factory.Cat
 import com.example.androidapplication.factory.CatFactory
-import com.example.androidapplication.user.User
+import com.example.androidapplication.factory.Factory
 
 class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db",null, 1){
     private val contentValue = ContentValues()
@@ -81,10 +75,10 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
     {
         val querry: String =
             "SELECT\n" +
-                "  a.ID,\n" +
-                "  a.Breed,\n" +
-                "  a.Description,\n" +
-                "  a.ImageUrl\n" +
+                "  a.ID as id_User,\n" +
+                "  a.Breed as breed_Animal,\n" +
+                "  a.Description as description_Animal,\n" +
+                "  a.ImageUrl as cat_Url\n" +
                 "FROM\n" +
                 "  Animal as a,\n" +
                 "  User as u,\n" +
@@ -98,21 +92,21 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
 
         val string = arrayOf(userId.toString())
         val result = this.readableDatabase.rawQuery(querry, string)
-        result.close()
 
-        val cats : ArrayList<Animal> = ArrayList()
+        val cats = ArrayList<Animal>()
 
         while (result.moveToNext()) {
 
-            val id = result.getInt(result.getColumnIndex("ID"))
-            val breed = result.getString(result.getColumnIndex("Breed"))
-            val description = result.getString(result.getColumnIndex("Description"))
-            val imageURL = result.getString(result.getColumnIndex("imageURL"))
-
-            val cat = CatFactory.CreateAnimal(id, breed, description, imageURL)
+            val id = result.getInt(result.getColumnIndex("id_User"))
+            val breed = result.getString(result.getColumnIndex("breed_Animal"))
+            val description = result.getString(result.getColumnIndex("description_Animal"))
+            val imageURL = result.getString(result.getColumnIndex("cat_Url"))
+            val catFactory : Factory = CatFactory()
+            val cat = catFactory.CreateAnimal(id, breed, description, imageURL)
 
             cats.add(cat)
         }
+        result.close()
 
         return cats
     }
@@ -134,7 +128,6 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         val id =  idSearchResult.getInt(idSearchResult.getColumnIndex("Cat_ID"))
         idSearchResult.close()
         insertIntoUserCollection(id,UserID)
-
     }
     private fun insertIntoUserCollection(id: Int,UserID: Int)
     {
@@ -151,5 +144,15 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         val query = "SELECT * FROM $tableNameUser WHERE Name = ? AND Password = ?"
         val result = this.readableDatabase.rawQuery(query, arrayOf(username,password))
         return result.count == 1
+    }
+
+    @SuppressLint("Range")
+    fun getUserCollection(userName: String): ArrayList<Animal> {
+        val query = "SELECT ID as user_ID FROM User WHERE Name = ?"
+        val userID = this.readableDatabase.rawQuery(query, arrayOf(userName))
+        userID.moveToFirst()
+        val iD = userID.getInt(userID.getColumnIndex("user_ID"))
+        userID.close()
+        return getListOfCatsByUser(iD)
     }
 }

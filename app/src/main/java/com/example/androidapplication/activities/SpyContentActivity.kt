@@ -19,6 +19,7 @@ class SpyContentActivity : AppCompatActivity(), Window {
     private lateinit var userCollection : RecyclerView
     private lateinit var userInput : TextInputEditText
     private lateinit var saveCommand : ICommand
+    private lateinit var mCats : ArrayList<Animal>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,21 +28,22 @@ class SpyContentActivity : AppCompatActivity(), Window {
         userInput = findViewById(R.id.userSearch)
         saveCommand = Save(this)
 
+        mCats = ArrayList()
         userCollection.layoutManager = LinearLayoutManager(this)
 
-        userCollection.adapter = SpyAdapter(this,generateList())
+
         userInput.doAfterTextChanged{
-            performAction()
+            mCats = searchUser()
         }
+        userCollection.adapter = SpyAdapter(this,generateList(mCats))
     }
 
 
-    private fun generateList() : ArrayList<Animal>
+    private fun generateList(listOfUserAnimals : ArrayList<Animal>) : ArrayList<Animal>
     {
         val list = ArrayList<Animal>()
-        for (i in 1..10)
-        {
-            list.add(Cat(i,"test","description ${i}","no"))
+        listOfUserAnimals.forEach {
+            list.add(Cat(it.id, it.breed, it.description, it.imageURL))
         }
         return list
     }
@@ -51,16 +53,11 @@ class SpyContentActivity : AppCompatActivity(), Window {
     }
 
     override fun performAction() {
-
     }
 
-    private fun getImage()
-    {
-        if(userInput.text.toString().isNotBlank())
-        {
-
-        }
+    private fun searchUser(): ArrayList<Animal> {
+        println(userInput.text)
+        return dbHelper.getUserCollection(userInput.text.toString())
     }
-
 }
 
