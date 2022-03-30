@@ -14,6 +14,7 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
     private  val tableNameUser = "User"
     private val columnUser = "Name"
     private  val columnPasswordUser = "Password"
+    private val spyUser = "SpyUser"
 
     private  val tableNameAnimal = "Animal"
     private val breed = "Breed"
@@ -24,9 +25,9 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
     private val userID = "UserID"
     private  val animalID = "AnimalID"
 
-    private val SQL_DATABASE_CREATION = "CREATE TABLE $tableNameUser (ID INTEGER PRIMARY KEY, $columnUser TEXT ,$columnPasswordUser TEXT)"
+    private val SQL_DATABASE_CREATION = "CREATE TABLE $tableNameUser (ID INTEGER PRIMARY KEY, $columnUser TEXT ,$columnPasswordUser TEXT,$spyUser INTEGER)"
 
-    private val animalTable = "CREATE TABLE $tableNameAnimal (ID INTEGER PRIMARY KEY, $breed TEXT, $description TEXT,${image} TEXT)"
+    private val animalTable = "CREATE TABLE $tableNameAnimal (ID INTEGER PRIMARY KEY, $breed TEXT, $description TEXT,$image TEXT)"
 
     private val collectionTable = "CREATE TABLE $tableAnimalCollection (ID INTEGER PRIMARY KEY," +
             " $userID INTEGER NOT NULL," +
@@ -48,14 +49,16 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         onCreate(db)
     }
 
-    fun insertIntoDatabase(username: String, password: String) : Boolean
+    fun insertIntoDatabase(username: String, password: String,isSpy : Int) : Boolean
     {
-        //encryption
-            contentValue.put(columnUser,username)
-            contentValue.put(columnPasswordUser,password)
-                val result = this.writableDatabase.insert(tableNameUser, null,contentValue)
-                if(result.toString() == "-1")
-                    return false
+        val query = "INSERT INTO $tableNameUser($columnUser,$columnPasswordUser,$spyUser) VALUES (?,?,?)"
+        val array = arrayOf(username,password,isSpy)
+        this.writableDatabase.execSQL(query,array)
+        val userInserted = "SELECT * FROM $tableNameUser WHERE $columnUser = ?"
+        val result = this.readableDatabase.rawQuery(userInserted, arrayOf(username))
+        result.close()
+        if(result.toString() == "-1")
+            return false
         return true
     }
 
@@ -139,8 +142,7 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
 
     fun loginUser(username: String, password: String): Boolean {
         val query = "SELECT * FROM $tableNameUser WHERE Name = ? AND Password = ?"
-        val array = arrayOf(password, username)
-        val result = this.readableDatabase.rawQuery(query, array)
+        val result = this.readableDatabase.rawQuery(query, arrayOf(username,password))
         return result.count == 1
     }
 
