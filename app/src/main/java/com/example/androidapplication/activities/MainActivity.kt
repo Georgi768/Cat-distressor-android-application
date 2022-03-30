@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.isVisible
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonArrayRequest
@@ -30,13 +32,15 @@ class MainActivity : AppCompatActivity(), Window {
     private var currentCatDescription: String? = null
     private lateinit var newCatBtn : Button
     private lateinit var saveCatCommand : ICommand
-    private val data = intent
+
     private var id : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        id = data.getIntExtra("ID",id)
+        getCatImage(resources.getString(R.string.api_url))
+        val data = intent
+        id = data.getIntExtra("user_ID",0)
         nextCommand = GetNext(this)
         saveCatCommand = Save(this)
         saveAnimal = findViewById(R.id.SaveToCollection)
@@ -44,6 +48,7 @@ class MainActivity : AppCompatActivity(), Window {
         catImageView = findViewById(R.id.catImage)
         newCatBtn = findViewById(R.id.getNewCatBtn)
 
+        currentCatUrl = ""
         currentCatDescription = null
         currentCatName = null
 
@@ -56,6 +61,8 @@ class MainActivity : AppCompatActivity(), Window {
         newCatBtn.setOnClickListener {
             nextCommand.execute()
         }
+
+        //ewCatBtn.isVisible = false
     }
 
     override fun next() {
@@ -85,10 +92,11 @@ class MainActivity : AppCompatActivity(), Window {
 
     override fun performAction() {
         //Save in the database for cats, and saved to userCollection
-        val emptyString = ""
-        dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, emptyString)
+        val catURl = currentCatUrl
+        dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, catURl)
+        println("CatInserted")
         dbHelper.addCatInUserCollection(id,currentCatUrl)
 
-        println("Cat saved$currentCatName he $currentCatDescription$emptyString")
+        println("Cat saved$currentCatName he $currentCatDescription$catURl")
     }
 }
