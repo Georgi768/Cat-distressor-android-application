@@ -148,11 +148,17 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
 
     @SuppressLint("Range")
     fun getUserCollection(userName: String): ArrayList<Animal> {
-        val query = "SELECT ID as user_ID FROM User WHERE Name = ?"
+        val query = "SELECT ID as user_ID FROM $tableNameUser WHERE $columnUser = ?"
         val userID = this.readableDatabase.rawQuery(query, arrayOf(userName))
         userID.moveToFirst()
-        val iD = userID.getInt(userID.getColumnIndex("user_ID"))
-        userID.close()
-        return getListOfCatsByUser(iD)
+        try {
+            val iD = userID.getInt(userID.getColumnIndex("user_ID"))
+            userID.close()
+            return getListOfCatsByUser(iD)
+        }catch (e:IndexOutOfBoundsException)
+        {
+            println(e)
+        }
+        return ArrayList()
     }
 }

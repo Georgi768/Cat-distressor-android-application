@@ -70,10 +70,10 @@ class MainActivity : AppCompatActivity(), Window {
         }
 
         spyCollectionBtn.setOnClickListener {
-            startActivity(Intent(this, SpyContentActivity::class.java))
+            val intent = Intent(this, SpyContentActivity::class.java)
+            intent.putExtra("user_ID",userID)
+            startActivity(intent)
         }
-
-        //ewCatBtn.isVisible = false
     }
 
 
