@@ -13,6 +13,7 @@ import com.example.androidapplication.activities.MainActivity
 import com.example.androidapplication.factory.Animal
 import com.example.androidapplication.factory.Cat
 import com.example.androidapplication.factory.CatFactory
+import com.example.androidapplication.user.User
 
 class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db",null, 1){
     private val contentValue = ContentValues()
@@ -66,10 +67,10 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
 
     fun insertCatIntoDatabase(name: String?, descrip: String?, url: String)
     {
-        contentValue.put(breed,name)
-        contentValue.put(description,descrip)
-        contentValue.put(image, url)
-        this.writableDatabase.insert(tableNameAnimal, null,contentValue)
+        val query = "INSERT INTO $tableNameAnimal($breed,$description,$image) VALUES (?,?,?)"
+        val array = arrayOf(name,descrip,url)
+        this.writableDatabase.execSQL(query,array)
+        println("Animal added to animal collection")
     }
 
     @SuppressLint("Range")
@@ -122,18 +123,24 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
     }
 
     @SuppressLint("Range")
-    fun addCatInUserCollection(userID : Int, animalImage: String)
+    fun addCatInUserCollection(UserID : Int, animalImage: String)
     {
-        val selectQuery = "SELECT ID FROM $tableNameAnimal WHERE $image = ?"
-        val array = arrayOf(animalImage)
-        val idSearchResult = this.readableDatabase.rawQuery(selectQuery,array)
-        val id =  idSearchResult.getInt(idSearchResult.getColumnIndex("ID"))
+        val selectQuery = "SELECT ID as Cat_ID FROM $tableNameAnimal WHERE $image = ?"
+        val idSearchResult = this.readableDatabase.rawQuery(selectQuery, arrayOf(animalImage))
+        idSearchResult.moveToFirst()
+        val id =  idSearchResult.getInt(idSearchResult.getColumnIndex("Cat_ID"))
         idSearchResult.close()
+        insertIntoUserCollection(id,UserID)
 
-        contentValue.put(userID.toString(),id)
+    }
+    private fun insertIntoUserCollection(id: Int,UserID: Int)
+    {
+        contentValue.put(userID,UserID)
         contentValue.put(animalID, id)
 
-        this.readableDatabase.insert(tableAnimalCollection,null,contentValue)
+        val query = "INSERT INTO $tableAnimalCollection($userID,$animalID) VALUES (?,?)"
+        val array = arrayOf(UserID,id)
+        this.writableDatabase.execSQL(query,array)
         println("Animal added to user collection")
     }
 
@@ -141,7 +148,6 @@ class DBHelper(context : Context) : SQLiteOpenHelper(context, "Cat_Distressor.db
         val query = "SELECT * FROM $tableNameUser WHERE Name = ? AND Password = ?"
         val array = arrayOf(password, username)
         val result = this.readableDatabase.rawQuery(query, array)
-        result.close()
         return result.count == 1
     }
 }
