@@ -13,6 +13,7 @@ import com.example.androidapplication.adapters.CatsAdapter
 import com.example.androidapplication.commands.GetLast
 import com.example.androidapplication.commands.GetNext
 import com.example.androidapplication.commands.ICommand
+import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.factory.Animal
 import com.example.androidapplication.factory.Cat
 import com.example.androidapplication.iterator.Aggregate
@@ -27,6 +28,7 @@ class CollectionActivity : AppCompatActivity(),Window {
     private lateinit var toMainWindow : Button
     private lateinit var nextCommand : ICommand
     private lateinit var lastCommand : ICommand
+    private var db : DBHelper = DBHelper(this);
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,9 @@ class CollectionActivity : AppCompatActivity(),Window {
         inOrderButton = findViewById(R.id.InOrderTraversal)
         backBtn = findViewById(R.id.BackwardsTraversal)
         cat_view = findViewById(R.id.cat_view)
-        aggregate = Aggregate(generateList())
+
+        var userID = intent.getIntExtra("user_ID", 0)
+        aggregate = Aggregate(db.getListOfCatsByUser(userID))
 
         cat_view.layoutManager = LinearLayoutManager(this)
 

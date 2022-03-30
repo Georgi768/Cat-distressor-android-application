@@ -60,7 +60,9 @@ class MainActivity : AppCompatActivity(), Window {
 
 
         getCatInfoButton.setOnClickListener {
-            startActivity(Intent(this, CollectionActivity::class.java))
+            val intent = Intent( this, CollectionActivity::class.java)
+            intent.putExtra("user_ID", userID)
+            startActivity(intent)
         }
         saveAnimal.setOnClickListener {
             saveCatCommand.execute()
