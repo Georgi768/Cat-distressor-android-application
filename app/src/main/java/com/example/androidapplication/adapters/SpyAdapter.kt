@@ -12,10 +12,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.androidapplication.R
+import com.example.androidapplication.commands.ICommand
 import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.factory.Animal
 
-class SpyAdapter (private val context: Context, val mCats: ArrayList<Animal>) : RecyclerView.Adapter<SpyAdapter.ViewHolder>(){
+class SpyAdapter (private val spyID : Int, private val context: Context, val mCats: ArrayList<Animal>) : RecyclerView.Adapter<SpyAdapter.ViewHolder>(){
+     private lateinit var saveCommand : ICommand
     private var dbHelper: DBHelper = DBHelper(context)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -34,7 +36,8 @@ class SpyAdapter (private val context: Context, val mCats: ArrayList<Animal>) : 
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Steal cat? ${items.id}")
             builder.setPositiveButton("Yes"){ _, _ ->
-                Toast.makeText(context,"clicked yes",Toast.LENGTH_LONG).show()
+                Toast.makeText(context,"you have saved the cat",Toast.LENGTH_LONG).show()
+                dbHelper.addCatInUserCollection(spyID,items.imageURL)
             }
             builder.setNeutralButton("Cancel"){ _, _ ->
                 Toast.makeText(context,"clicked cancel\n operation cancel",Toast.LENGTH_LONG).show()
