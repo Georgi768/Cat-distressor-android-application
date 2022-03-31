@@ -3,8 +3,8 @@ package com.example.androidapplication.iterator
 import com.example.androidapplication.factory.Animal
 
 class TraverseInOrder(userCollection : ArrayList<Animal>) : Iterator{
-    protected val collection = userCollection
-    protected var position = 0
+    private val collection = userCollection
+    private var position = 0
     override fun hasNext(): Boolean {
             if(position >= collection.size)
             {

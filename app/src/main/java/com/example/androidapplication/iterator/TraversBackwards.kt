@@ -3,8 +3,8 @@ package com.example.androidapplication.iterator
 import com.example.androidapplication.factory.Animal
 
 class TraversBackwards(userCollection : ArrayList<Animal>) : Iterator {
-    protected val collection = createBackwardsCollection(userCollection)
-    protected var position = 0
+    private val collection = createBackwardsCollection(userCollection)
+    private var position = 0
     override fun hasNext(): Boolean {
         if(position >= collection.size)
         {

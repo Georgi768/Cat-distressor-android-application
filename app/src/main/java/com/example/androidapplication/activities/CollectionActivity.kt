@@ -13,6 +13,7 @@ import com.example.androidapplication.adapters.CatsAdapter
 import com.example.androidapplication.commands.GetLast
 import com.example.androidapplication.commands.GetNext
 import com.example.androidapplication.commands.ICommand
+import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.factory.Animal
 import com.example.androidapplication.factory.Cat
 import com.example.androidapplication.iterator.Aggregate
@@ -20,6 +21,7 @@ import com.example.androidapplication.iterator.Collection
 import com.example.androidapplication.iterator.TraverseInOrder
 
 class CollectionActivity : AppCompatActivity(),Window {
+    private lateinit var dbHelper: DBHelper
     private lateinit var cat_view : RecyclerView
     private lateinit var aggregate : Collection
     private lateinit var inOrderButton : Button
@@ -27,9 +29,12 @@ class CollectionActivity : AppCompatActivity(),Window {
     private lateinit var toMainWindow : Button
     private lateinit var nextCommand : ICommand
     private lateinit var lastCommand : ICommand
+    private lateinit var data: Intent
+    private lateinit var userCollection : ArrayList<Animal>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        dbHelper = DBHelper(this)
         setContentView(R.layout.activity_collection)
         nextCommand = GetNext(this)
         lastCommand = GetLast(this)
@@ -38,12 +43,14 @@ class CollectionActivity : AppCompatActivity(),Window {
         inOrderButton = findViewById(R.id.InOrderTraversal)
         backBtn = findViewById(R.id.BackwardsTraversal)
         cat_view = findViewById(R.id.cat_view)
-        aggregate = Aggregate(generateList())
+        val user = intent.getIntExtra("user_ID", 0)
+        val isSpy = intent.getIntExtra("isSpy", 0)
+        userCollection = dbHelper.getListOfCatsByUser(user)
+        aggregate = Aggregate(userCollection)
 
         cat_view.layoutManager = LinearLayoutManager(this)
 
-        cat_view.adapter = CatsAdapter(this,traverseInOrderCollection())
-
+        cat_view.adapter = CatsAdapter(this,userCollection)
 
         inOrderButton.setOnClickListener{
             nextCommand.execute()
@@ -54,7 +61,10 @@ class CollectionActivity : AppCompatActivity(),Window {
         }
 
         toMainWindow.setOnClickListener{
-            startActivity(Intent(this,MainActivity::class.java))
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("user_ID",user)
+            intent.putExtra("isSpy",isSpy)
+            startActivity(intent)
         }
 
     }

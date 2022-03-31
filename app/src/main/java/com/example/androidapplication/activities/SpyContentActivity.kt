@@ -1,6 +1,8 @@
 package com.example.androidapplication.activities
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,9 +22,11 @@ class SpyContentActivity : AppCompatActivity(),Window {
     private lateinit var userCollection : RecyclerView
     private lateinit var userInput : TextInputEditText
     private lateinit var saveCommand : ICommand
+    private lateinit var homePageBtn : Button
     private lateinit var mCats : ArrayList<Animal>
     private lateinit var aggregate : Collection
     private var id : Int = 0
+    private var spyValidation : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,14 +34,23 @@ class SpyContentActivity : AppCompatActivity(),Window {
         setContentView(R.layout.activity_spyusercollection)
         userCollection = findViewById(R.id.userCollection)
         userInput = findViewById(R.id.userSearch)
+        homePageBtn = findViewById(R.id.backToMainPage)
 
         mCats = ArrayList()
         userCollection.layoutManager = LinearLayoutManager(this)
 
         val data = intent
         id = data.getIntExtra("user_ID",0)
+        spyValidation = data.getIntExtra("isSpy",0)
         userInput.doAfterTextChanged{
             saveCommand.execute()
+        }
+
+        homePageBtn.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("user_ID",id)
+            intent.putExtra("isSpy", spyValidation)
+            startActivity(intent)
         }
     }
     private fun generateList() : ArrayList<Animal>
