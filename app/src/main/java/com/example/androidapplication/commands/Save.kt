@@ -1,6 +1,5 @@
 package com.example.androidapplication.commands
 
-import com.example.androidapplication.activities.MainActivity
 import com.example.androidapplication.activities.Window
 
 class Save(window : Window) : ICommand {

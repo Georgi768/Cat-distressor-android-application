@@ -21,6 +21,7 @@ import com.example.androidapplication.commands.Save
 import com.example.androidapplication.databaseManagement.DBHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity(), Window {
     private var dbHelper: DBHelper = DBHelper(this)
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity(), Window {
     private lateinit var themeSwitch : SwitchCompat
     private lateinit var saveCatCommand : ICommand
     private var userID : Int = 0
+    private var spyNumber : Int = 0
+    private var currentUserId by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +49,9 @@ class MainActivity : AppCompatActivity(), Window {
         spyCollectionBtn = findViewById(R.id.SpyCollection)
         themeSwitch = findViewById(R.id.ThemeSwitch)
         userID = data.getIntExtra("user_ID",0)
-        isUserSpy(data.getIntExtra("isSpy",0))
+        currentUserId = userID
+        spyNumber = data.getIntExtra("isSpy",0)
+        isUserSpy(spyNumber)
         nextCommand = GetNext(this)
         saveCatCommand = Save(this)
         saveAnimal = findViewById(R.id.SaveToCollection)
@@ -60,7 +65,10 @@ class MainActivity : AppCompatActivity(), Window {
 
 
         getCatInfoButton.setOnClickListener {
-            startActivity(Intent(this, CollectionActivity::class.java))
+            val intent = Intent( this, CollectionActivity::class.java)
+            intent.putExtra("user_ID", currentUserId)
+            intent.putExtra("isSpy", spyNumber)
+            startActivity(intent)
         }
         saveAnimal.setOnClickListener {
             saveCatCommand.execute()
@@ -72,6 +80,7 @@ class MainActivity : AppCompatActivity(), Window {
         spyCollectionBtn.setOnClickListener {
             val intent = Intent(this, SpyContentActivity::class.java)
             intent.putExtra("user_ID",userID)
+            intent.putExtra("isSpy", spyNumber)
             startActivity(intent)
         }
     }
@@ -114,6 +123,8 @@ class MainActivity : AppCompatActivity(), Window {
         }, { error -> error.printStackTrace() })
         requestQueue?.add(request)
     }
+
+
 
     override fun performAction() {
         //Save in the database for cats, and saved to userCollection
