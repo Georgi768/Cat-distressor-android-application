@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -33,7 +32,6 @@ class MainActivity : AppCompatActivity(), Window {
     private lateinit var currentCatUrl: String
     private var currentCatDescription: String? = null
     private lateinit var newCatBtn : Button
-    private lateinit var themeSwitch : SwitchCompat
     private lateinit var saveCatCommand : ICommand
     private var userID : Int = 0
     private var spyNumber : Int = 0
@@ -45,7 +43,6 @@ class MainActivity : AppCompatActivity(), Window {
         getCatImage(resources.getString(R.string.api_url))
         val data = intent
         spyCollectionBtn = findViewById(R.id.SpyCollection)
-        themeSwitch = findViewById(R.id.ThemeSwitch)
         userID = data.getIntExtra("user_ID",0)
         currentUserId = userID
         spyNumber = data.getIntExtra("isSpy",0)
@@ -92,12 +89,10 @@ class MainActivity : AppCompatActivity(), Window {
     {
         if(spyNumber == 1){
             spyCollectionBtn.isVisible = true
-            themeSwitch.isVisible = true
             println("this is a sply user")
             return true
         }
         spyCollectionBtn.isVisible = false
-        themeSwitch.isVisible = false
         return false
     }
 
