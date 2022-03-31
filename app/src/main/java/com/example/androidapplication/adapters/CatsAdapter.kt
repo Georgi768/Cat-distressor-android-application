@@ -21,7 +21,7 @@ class CatsAdapter (private val context: Context, val mCats: ArrayList<Animal>) :
 
     override fun onBindViewHolder(holder: ViewHolder,position: Int) {
         val items = mCats.get(position)
-        holder.catItem.text = items.description // holder.catItem.setImageURI(items.imageURL.toUri())
+        holder.catItem.text = items.breed // holder.catItem.setImageURI(items.imageURL.toUri())
         Glide.with(context).load(items.imageURL).into(holder.catImage)
     }
 

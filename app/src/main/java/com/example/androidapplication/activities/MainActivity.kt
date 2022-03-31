@@ -4,9 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Switch
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import com.android.volley.Request
@@ -109,6 +107,11 @@ class MainActivity : AppCompatActivity(), Window {
             try {
                 val catData = response.getJSONObject(0)
                 currentCatUrl = catData.getString("url")
+                // button to get ifo
+                val breedInfo = catData.getJSONArray("breeds")
+                val breedData = breedInfo.getJSONObject(0)
+                currentCatDescription = breedData.getString("description")
+                currentCatName = breedData.getString("name")
                 Glide.with(this)
                     .load(currentCatUrl)
                     .override(

@@ -1,12 +1,10 @@
 package com.example.androidapplication.activities
 
 import android.content.Intent
-import android.database.Cursor
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.androidapplication.R
 import com.example.androidapplication.databaseManagement.DBHelper
@@ -38,7 +36,7 @@ class SignUpActivity : AppCompatActivity() {
         {
             if(!userExist(name))
             {
-                if(database.insertIntoDatabase(name,pass,0))
+                if(database.insertIntoDatabase(name,pass,1))
                     Toast.makeText(this,"Entry added",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this,LoginActivity::class.java)
                     startActivity(intent)
