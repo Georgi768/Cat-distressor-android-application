@@ -2,13 +2,8 @@ package com.example.androidapplication.commands
 
 import com.example.androidapplication.activities.Window
 
-class GetNext(windows :Window) : ICommand{
-    private val window = windows
+class GetNext(private val window :Window) : ICommand{
     override fun execute() {
         window.next()
-    }
-
-    override fun undo() {
-        TODO("Not yet implemented")
     }
 }
