@@ -45,3 +45,7 @@ This class is used to execute queries to the database.
 The adapter classes are used to translate received information into a RecyclerView to be displayed in the UI. 
 
 The adapter classes are critical to the function of the application as it is required to display lists of items, and is used for updating of the UI, if items within the RecyclerView is changed or removed.
+
+# Class Diagram
+
+![Alt text](ClassDiagram/ImprovedClassDiagram.png "class diagram")
