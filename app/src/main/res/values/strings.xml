@@ -27,4 +27,5 @@
     <string name="spy_window">Spy window</string>
     <string name="user">User</string>
     <string name="theme">Theme</string>
+    <string name="secret">Secret</string>
 </resources>

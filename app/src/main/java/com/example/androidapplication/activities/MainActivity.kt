@@ -135,7 +135,5 @@ class MainActivity : AppCompatActivity(), Window {
         dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, catURl)
         println("CatInserted")
         dbHelper.addCatInUserCollection(userID,currentCatUrl)
-
-        println("Cat saved$currentCatName he $currentCatDescription$catURl")
     }
 }
