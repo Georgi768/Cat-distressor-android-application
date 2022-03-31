@@ -47,6 +47,6 @@ The adapter classes are used to translate received information into a RecyclerVi
 The adapter classes are critical to the function of the application as it is required to display lists of items, and is used for updating of the UI, if items within the RecyclerView is changed or removed.
 
 # Class Diagram
-Please keep in mind that the diagram does not contain the class from andorid studio such as buttons, views, ext.
+Please keep in mind that the diagram does not contain the classes from andorid studio such as buttons, views, appCompatActivity, RecyrclerView, ext.
 
 ![Alt text](ClassDiagram/ImprovedClassDiagram.png "class diagram")
