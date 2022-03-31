@@ -109,9 +109,14 @@ class MainActivity : AppCompatActivity(), Window {
                 currentCatUrl = catData.getString("url")
                 // button to get ifo
                 val breedInfo = catData.getJSONArray("breeds")
-                val breedData = breedInfo.getJSONObject(0)
-                currentCatDescription = breedData.getString("description")
-                currentCatName = breedData.getString("name")
+                if(breedInfo.isNull(0))
+                {
+                    println("No data available")
+                }else {
+                    val breedData = breedInfo.getJSONObject(0)
+                    currentCatDescription = breedData.getString("description")
+                    currentCatName = breedData.getString("name")
+                }
                 Glide.with(this)
                     .load(currentCatUrl)
                     .override(
@@ -119,7 +124,6 @@ class MainActivity : AppCompatActivity(), Window {
                         600
                     ) // resizes the image to 100x200 pixels but does not respect aspect ratio
                     .into(catImageView)
-
             } catch (e: JSONException) {
                 e.printStackTrace()
             }
