@@ -14,7 +14,7 @@ class TraversBackwards(userCollection : ArrayList<Animal>) : Iterator {
     }
 
     override fun next(): Animal {
-        val animal = collection.get(position)
+        val animal = collection[position]
         position++
         return animal
     }
@@ -24,7 +24,7 @@ class TraversBackwards(userCollection : ArrayList<Animal>) : Iterator {
         val backwardsCollection = ArrayList<Animal>()
         for (i in collectionAnimals.size downTo 1)
         {
-            val animal = collectionAnimals.get(i -1)
+            val animal = collectionAnimals[i -1]
             backwardsCollection.add(animal)
         }
         return backwardsCollection
