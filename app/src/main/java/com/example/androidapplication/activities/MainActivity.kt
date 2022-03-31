@@ -18,7 +18,6 @@ import com.example.androidapplication.commands.Save
 import com.example.androidapplication.databaseManagement.DBHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.json.JSONException
-import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity(), Window {
     private var dbHelper: DBHelper = DBHelper(this)
@@ -32,7 +31,6 @@ class MainActivity : AppCompatActivity(), Window {
     private lateinit var currentCatUrl: String
     private var currentCatDescription: String? = null
     private lateinit var newCatBtn: Button
-    private lateinit var themeSwitch: SwitchCompat
     private lateinit var saveCatCommand: ICommand
     private var userID: Int = 0
     private var spyNumber: Int = 0
@@ -43,12 +41,6 @@ class MainActivity : AppCompatActivity(), Window {
 
         // Assigning all views
         spyCollectionBtn = findViewById(R.id.SpyCollection)
-        userID = data.getIntExtra("user_ID",0)
-        currentUserId = userID
-        spyNumber = data.getIntExtra("isSpy",0)
-        isUserSpy(spyNumber)
-        nextCommand = GetNext(this)
-        saveCatCommand = Save(this)
         saveAnimal = findViewById(R.id.SaveToCollection)
         getCatInfoButton = findViewById(R.id.getCatInfoButton)
         catImageView = findViewById(R.id.catImage)
@@ -56,7 +48,6 @@ class MainActivity : AppCompatActivity(), Window {
 
         getCatImage(resources.getString(R.string.api_url))
         val data = intent
-
         // Check user ID and Spy validation
         userID = data.getIntExtra("user_ID", 0)
         spyNumber = data.getIntExtra("isSpy", 0)
@@ -70,7 +61,6 @@ class MainActivity : AppCompatActivity(), Window {
         currentCatUrl = ""
         currentCatDescription = null
         currentCatName = null
-
         // Set click listeners
         getCatInfoButton.setOnClickListener {
             val intent = Intent(this, CollectionActivity::class.java)
@@ -84,7 +74,6 @@ class MainActivity : AppCompatActivity(), Window {
         newCatBtn.setOnClickListener {
             nextCommand.execute()
         }
-
         spyCollectionBtn.setOnClickListener {
             val intent = Intent(this, SpyContentActivity::class.java)
             intent.putExtra("user_ID", userID)
