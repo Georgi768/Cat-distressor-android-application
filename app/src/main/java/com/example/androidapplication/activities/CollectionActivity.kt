@@ -3,107 +3,87 @@ package com.example.androidapplication.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidapplication.R
 import com.example.androidapplication.adapters.CatsAdapter
-import com.example.androidapplication.commands.GetLast
-import com.example.androidapplication.commands.GetNext
-import com.example.androidapplication.commands.ICommand
 import com.example.androidapplication.databaseManagement.DBHelper
 import com.example.androidapplication.factory.Animal
-import com.example.androidapplication.factory.Cat
 import com.example.androidapplication.iterator.Aggregate
 import com.example.androidapplication.iterator.Collection
-import com.example.androidapplication.iterator.TraverseInOrder
 
-class CollectionActivity : AppCompatActivity(),Window {
+class CollectionActivity : AppCompatActivity() {
     private lateinit var dbHelper: DBHelper
-    private lateinit var cat_view : RecyclerView
-    private lateinit var aggregate : Collection
-    private lateinit var inOrderButton : Button
-    private lateinit var backBtn : Button
-    private lateinit var toMainWindow : Button
-    private lateinit var nextCommand : ICommand
-    private lateinit var lastCommand : ICommand
-    private lateinit var data: Intent
-    private lateinit var userCollection : ArrayList<Animal>
+    private lateinit var cat_view: RecyclerView
+    private lateinit var aggregate: Collection
+    private lateinit var inOrderButton: Button
+    private lateinit var backBtn: Button
+    private lateinit var toMainWindow: Button
+    private lateinit var userCollection: ArrayList<Animal>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dbHelper = DBHelper(this)
         setContentView(R.layout.activity_collection)
-        nextCommand = GetNext(this)
-        lastCommand = GetLast(this)
+        dbHelper = DBHelper(this)
 
+        // Assigning all views
         toMainWindow = findViewById(R.id.ToMainWindow)
         inOrderButton = findViewById(R.id.InOrderTraversal)
         backBtn = findViewById(R.id.BackwardsTraversal)
         cat_view = findViewById(R.id.cat_view)
+
+        // Getting user information from the previous activity
         val user = intent.getIntExtra("user_ID", 0)
         val isSpy = intent.getIntExtra("isSpy", 0)
+
+        // Creating the aggregate class and assign the user collection
         userCollection = dbHelper.getListOfCatsByUser(user)
         aggregate = Aggregate(userCollection)
 
         cat_view.layoutManager = LinearLayoutManager(this)
+        cat_view.adapter = CatsAdapter(this, userCollection)
 
-        cat_view.adapter = CatsAdapter(this,userCollection)
-
-        inOrderButton.setOnClickListener{
-            nextCommand.execute()
+        // Setting click listeners
+        inOrderButton.setOnClickListener {
+            traverInOrder()
         }
-
-        backBtn.setOnClickListener{
-            lastCommand.execute()
+        backBtn.setOnClickListener {
+            backwardsTraversal()
         }
-
-        toMainWindow.setOnClickListener{
+        toMainWindow.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("user_ID",user)
-            intent.putExtra("isSpy",isSpy)
+            intent.putExtra("user_ID", user)
+            intent.putExtra("isSpy", isSpy)
             startActivity(intent)
         }
-
     }
 
-    private fun generateList() : ArrayList<Animal>
-    {
-        val list = ArrayList<Animal>()
-        for (i in 1..10)
-        {
-            list.add(Cat(i,"test","description ${i}","no"))
-        }
-        return list
-    }
-
-    private fun traverseInOrderCollection() : ArrayList<Animal>
-    {
+    private fun traverseInOrderCollection(): ArrayList<Animal> {
+        // Creating in order iterator
         val inOrderCollection = ArrayList<Animal>()
         val iterator = aggregate.createInOrderIterator()
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             inOrderCollection.add(iterator.next())
         }
         return inOrderCollection
     }
 
-    private fun traverseCollectionInBackwards() : ArrayList<Animal>
-    {
+    private fun traverseInBackwardsCollection(): ArrayList<Animal> {
+        // Creating backwards iterator
         val randomCollection = ArrayList<Animal>()
         val iterator = aggregate.createBackwardsIterator()
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             randomCollection.add(iterator.next())
         }
         return randomCollection
     }
 
-    override fun next() {
-        cat_view.adapter = CatsAdapter(this,traverseInOrderCollection())
+    private fun traverInOrder() {
+        cat_view.adapter = CatsAdapter(this, traverseInOrderCollection())
     }
 
-    override fun performAction() {
-        cat_view.adapter = CatsAdapter(this,traverseCollectionInBackwards())
+    private fun backwardsTraversal() {
+        cat_view.adapter = CatsAdapter(this, traverseInBackwardsCollection())
     }
 }

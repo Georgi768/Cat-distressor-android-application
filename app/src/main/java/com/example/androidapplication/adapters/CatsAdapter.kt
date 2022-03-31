@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.androidapplication.R
 import com.example.androidapplication.factory.Animal
 
-class CatsAdapter(private val context: Context, val mCats: ArrayList<Animal>) :
+class CatsAdapter(private val context: Context, private val mCats: ArrayList<Animal>) :
     RecyclerView.Adapter<CatsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -25,7 +25,7 @@ class CatsAdapter(private val context: Context, val mCats: ArrayList<Animal>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val items = mCats.get(position)
-        holder.catItem.text = items.breed // holder.catItem.setImageURI(items.imageURL.toUri())
+        holder.catItem.text = items.breed
         Glide.with(context).load(items.imageURL).into(holder.catImage)
     }
 

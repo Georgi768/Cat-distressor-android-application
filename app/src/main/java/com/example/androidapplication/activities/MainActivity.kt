@@ -26,22 +26,22 @@ class MainActivity : AppCompatActivity(), Window {
     private lateinit var getCatInfoButton: FloatingActionButton
     private lateinit var catImageView: ImageView
     private lateinit var nextCommand: ICommand
-    private lateinit var spyCollectionBtn : Button
+    private lateinit var spyCollectionBtn: Button
     private var requestQueue: RequestQueue? = null
-    private var currentCatName :String? = null
+    private var currentCatName: String? = null
     private lateinit var currentCatUrl: String
     private var currentCatDescription: String? = null
-    private lateinit var newCatBtn : Button
-    private lateinit var saveCatCommand : ICommand
-    private var userID : Int = 0
-    private var spyNumber : Int = 0
-    private var currentUserId by Delegates.notNull<Int>()
+    private lateinit var newCatBtn: Button
+    private lateinit var themeSwitch: SwitchCompat
+    private lateinit var saveCatCommand: ICommand
+    private var userID: Int = 0
+    private var spyNumber: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        getCatImage(resources.getString(R.string.api_url))
-        val data = intent
+
+        // Assigning all views
         spyCollectionBtn = findViewById(R.id.SpyCollection)
         userID = data.getIntExtra("user_ID",0)
         currentUserId = userID
@@ -54,14 +54,27 @@ class MainActivity : AppCompatActivity(), Window {
         catImageView = findViewById(R.id.catImage)
         newCatBtn = findViewById(R.id.getNewCatBtn)
 
+        getCatImage(resources.getString(R.string.api_url))
+        val data = intent
+
+        // Check user ID and Spy validation
+        userID = data.getIntExtra("user_ID", 0)
+        spyNumber = data.getIntExtra("isSpy", 0)
+        isUserSpy(spyNumber)
+
+        //Command pattern for next and save
+        nextCommand = GetNext(this)
+        saveCatCommand = Save(this)
+
+        // Instantiating variables for the API
         currentCatUrl = ""
         currentCatDescription = null
         currentCatName = null
 
-
+        // Set click listeners
         getCatInfoButton.setOnClickListener {
-            val intent = Intent( this, CollectionActivity::class.java)
-            intent.putExtra("user_ID", currentUserId)
+            val intent = Intent(this, CollectionActivity::class.java)
+            intent.putExtra("user_ID", userID)
             intent.putExtra("isSpy", spyNumber)
             startActivity(intent)
         }
@@ -74,20 +87,18 @@ class MainActivity : AppCompatActivity(), Window {
 
         spyCollectionBtn.setOnClickListener {
             val intent = Intent(this, SpyContentActivity::class.java)
-            intent.putExtra("user_ID",userID)
+            intent.putExtra("user_ID", userID)
             intent.putExtra("isSpy", spyNumber)
             startActivity(intent)
         }
     }
 
-
     override fun next() {
         getCatImage(resources.getString(R.string.api_url))
     }
 
-    private fun isUserSpy(spyNumber : Int) : Boolean
-    {
-        if(spyNumber == 1){
+    private fun isUserSpy(spyNumber: Int): Boolean {
+        if (spyNumber == 1) {
             spyCollectionBtn.isVisible = true
             println("this is a sply user")
             return true
@@ -104,10 +115,9 @@ class MainActivity : AppCompatActivity(), Window {
                 currentCatUrl = catData.getString("url")
                 // button to get ifo
                 val breedInfo = catData.getJSONArray("breeds")
-                if(breedInfo.isNull(0))
-                {
+                if (breedInfo.isNull(0)) {
                     println("No data available")
-                }else {
+                } else {
                     val breedData = breedInfo.getJSONObject(0)
                     currentCatDescription = breedData.getString("description")
                     currentCatName = breedData.getString("name")
@@ -126,13 +136,11 @@ class MainActivity : AppCompatActivity(), Window {
         requestQueue?.add(request)
     }
 
-
-
-    override fun performAction() {
+    override fun save() {
         //Save in the database for cats, and saved to userCollection
         val catURl = currentCatUrl
         dbHelper.insertCatIntoDatabase(currentCatName, currentCatDescription, catURl)
         println("CatInserted")
-        dbHelper.addCatInUserCollection(userID,currentCatUrl)
+        dbHelper.addCatInUserCollection(userID, currentCatUrl)
     }
 }
