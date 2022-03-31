@@ -12,6 +12,8 @@ import com.google.android.material.textfield.TextInputEditText
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var database : DBHelper
+    private lateinit var spyButton : Button
+    var spyValidation : Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
@@ -19,6 +21,8 @@ class SignUpActivity : AppCompatActivity() {
         val password = findViewById<TextInputEditText>(R.id.password)
         val btnSignUp = findViewById<Button>(R.id.buttonSignUp)
         val loginText = findViewById<TextView>(R.id.logintext)
+        spyButton = findViewById(R.id.spy_activation)
+
         database =  DBHelper(this)
 
         btnSignUp.setOnClickListener{
@@ -29,6 +33,11 @@ class SignUpActivity : AppCompatActivity() {
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
+
+        spyButton.setOnClickListener {
+            Toast.makeText(this,"You are a spy Harry!",Toast.LENGTH_LONG).show()
+            spyValidation = 1
+        }
     }
     private fun insertData(name:String,pass:String,database:DBHelper)
     {
@@ -36,7 +45,7 @@ class SignUpActivity : AppCompatActivity() {
         {
             if(!userExist(name))
             {
-                if(database.insertIntoDatabase(name,pass,1))
+                if(database.insertIntoDatabase(name,pass,spyValidation))
                     Toast.makeText(this,"Entry added",Toast.LENGTH_SHORT).show()
                     val intent = Intent(this,LoginActivity::class.java)
                     startActivity(intent)
